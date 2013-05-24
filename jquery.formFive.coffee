@@ -1,6 +1,6 @@
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.0, May 20th, 2013
+# version 1.1, May 24th, 2013
 # by Etienne Talbot
 
 jQuery.fn.formFive = (settings) ->
@@ -14,55 +14,70 @@ jQuery.fn.formFive = (settings) ->
     formenctype:      false             # Set to true to activate the formenctype functionality
     formmethod:       false             # Set to true to activate the formmethod functionality
     formtarget:       false             # Set to true to activate the formtarget functionality
+    formAttribute:    false             # Set to true to activate the form attribute on form elements outside the form
   
   jQuery.extend(config, settings) if settings
   
-  targetForm =           null
-  placeholderTextBoxes = null
+  targetForm =            null
+  placeholderTextBoxes =  null
   
   # Initialize the plugin
   init = =>
     targetForm = jQuery this
     
     # initialize the placeholder functionality if unsupported and wanted
-    if not isSupported('input', 'placeholder') and config.placeholder
-      targetForm.off 'submit', commonSubmitCheckup
-      targetForm.on 'submit', commonSubmitCheckup
-      placeholderInit()
-    else
-      config.placeholder = false
+    if config.placeholder
+      if not isSupported('input', 'placeholder')
+        targetForm.off 'submit', commonSubmitCheckup
+        targetForm.on 'submit', commonSubmitCheckup
+        placeholderInit()
+      else
+        config.placeholder = false
     
     # initialize the autofocus functionality if unsupported and wanted
-    if not isSupported('input', 'autofocus') and config.autofocus
-      autofocusInit()
-    else
-      config.autofocus = false
+    if config.autofocus
+      if not isSupported('input', 'autofocus')
+        autofocusInit()
+      else
+        config.autofocus = false
     
     # initialize the form functionalities on submit buttons if unsupported and wanted
     formAlternatives = false
-    if not isSupported('input', 'formAction') and config.formaction
-      formAlternatives = true
-    else
-      config.formaction = false
     
-    if not isSupported('input', 'formEnctype') and config.formenctype
-      formAlternatives = true
-    else
-      config.formenctype = false
+    if config.formaction
+      if not isSupported('input', 'formAction')
+        formAlternatives = true
+      else
+        config.formaction = false
     
-    if not isSupported('input', 'formMethod') and config.formmethod
-      formAlternatives = true
-    else
-      config.formmethod = false
+    if config.formenctype
+      if not isSupported('input', 'formEnctype')
+        formAlternatives = true
+      else
+        config.formenctype = false
     
-    if not isSupported('input', 'formTarget') and config.formtarget
-      formAlternatives = true
-    else
-      config.formtarget = false
+    if config.formmethod
+      if not isSupported('input', 'formMethod')
+        formAlternatives = true
+      else
+        config.formmethod = false
     
-    if formAlternatives
+    if config.formtarget
+      if not isSupported('input', 'formTarget')
+        formAlternatives = true
+      else
+        config.formtarget = false
+
+    # Check if formAttribute is supported
+    if config.formAttribute
+      if formAttributeIsSupported()
+        config.formAttribute = false
+
+    if config.formAttribute or formAlternatives
       targetForm.off 'submit', commonSubmitCheckup
       targetForm.on 'submit', commonSubmitCheckup
+    
+    if formAlternatives
       formAlternativesInit()
     
     return
@@ -88,15 +103,11 @@ jQuery.fn.formFive = (settings) ->
   
   # Before submitting, check if placeholders are still there
   commonPresubmitCheckup = ->
-    if !isSupported('input', 'placeholder') && config.placeholder
-      placeholderTextBoxes = targetForm.find '*[placeholder]'
-      placeholderTextBoxes.off()
-      for placeholderTextBox, i in placeholderTextBoxes
-        currentTextbox = placeholderTextBoxes.eq i
-        
-        if currentTextbox.val() is currentTextbox.attr 'placeholder'
-          currentTextbox.val ''
-          currentTextbox.removeClass config.placeholderClass
+    if config.placeholder
+      placeholderCleanFields()
+
+    if config.formAttribute
+      formAttributeCloning()
 
     return true
   
@@ -189,6 +200,19 @@ jQuery.fn.formFive = (settings) ->
     currentTextbox.replaceWith newTextbox
     
     return newTextbox
+
+  # Remove the values in the placeholder fields if these values are the same as the placeholder
+  placeholderCleanFields = ->
+    placeholderTextBoxes = targetForm.find '*[placeholder]'
+    placeholderTextBoxes.off()
+    for placeholderTextBox, i in placeholderTextBoxes
+      currentTextbox = placeholderTextBoxes.eq i
+      
+      if currentTextbox.val() is currentTextbox.attr 'placeholder'
+        currentTextbox.val ''
+        currentTextbox.removeClass config.placeholderClass
+
+    return
   
   # If autofocus found, put caret there
   autofocusInit = ->
@@ -245,6 +269,40 @@ jQuery.fn.formFive = (settings) ->
     
     return
   
+  # Check if the form attribute is supported
+  formAttributeIsSupported = ->
+    testInput =  document.createElement 'input'
+    $testInput = jQuery testInput
+    jQuery('body').append testInput
+    $testInput.attr 'form', targetForm.attr('id')
+
+    # If the form attribute is used as HTML5 uses it, it will be an object
+    if typeof testInput.form == 'object' and testInput.form != null
+      theResult = true
+    else
+      theResult = false
+
+    $testInput.remove()
+    theResult
+
+
+  # Clone form elements with the right form attribute value that are outside the form... inside the form
+  formAttributeCloning = ->
+    elementsWithForm = jQuery '*[form]'
+
+    for elementWithForm in elementsWithForm
+      elementWithForm =       jQuery elementsWithForm
+      elementWithFormTarget = elementWithForm.attr 'form'
+      formId =                targetForm.attr 'id'
+      
+      if not jQuery.contains(targetForm[0], elementWithForm) and elementWithFormTarget is formId
+        clonedElement = jQuery(elementWithForm).clone()
+        clonedElement = placeholderReplaceWithType clonedElement, 'hidden'
+
+        targetForm.append clonedElement
+
+    return
+
 
   init()
   

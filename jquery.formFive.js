@@ -2,7 +2,7 @@
 (function() {
 
   jQuery.fn.formFive = function(settings) {
-    var autofocusInit, commonPresubmitCheckup, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderInit, placeholderReplaceWithType, placeholderSetValues, placeholderTextBoxes, targetForm,
+    var autofocusInit, commonPresubmitCheckup, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, formAttributeCloning, formAttributeIsSupported, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderCleanFields, placeholderInit, placeholderReplaceWithType, placeholderSetValues, placeholderTextBoxes, targetForm,
       _this = this;
     config = {
       placeholder: false,
@@ -11,7 +11,8 @@
       formaction: false,
       formenctype: false,
       formmethod: false,
-      formtarget: false
+      formtarget: false,
+      formAttribute: false
     };
     if (settings) {
       jQuery.extend(config, settings);
@@ -21,42 +22,61 @@
     init = function() {
       var formAlternatives;
       targetForm = jQuery(_this);
-      if (!isSupported('input', 'placeholder') && config.placeholder) {
-        targetForm.off('submit', commonSubmitCheckup);
-        targetForm.on('submit', commonSubmitCheckup);
-        placeholderInit();
-      } else {
-        config.placeholder = false;
+      if (config.placeholder) {
+        if (!isSupported('input', 'placeholder')) {
+          targetForm.off('submit', commonSubmitCheckup);
+          targetForm.on('submit', commonSubmitCheckup);
+          placeholderInit();
+        } else {
+          config.placeholder = false;
+        }
       }
-      if (!isSupported('input', 'autofocus') && config.autofocus) {
-        autofocusInit();
-      } else {
-        config.autofocus = false;
+      if (config.autofocus) {
+        if (!isSupported('input', 'autofocus')) {
+          autofocusInit();
+        } else {
+          config.autofocus = false;
+        }
       }
       formAlternatives = false;
-      if (!isSupported('input', 'formAction') && config.formaction) {
-        formAlternatives = true;
-      } else {
-        config.formaction = false;
+      if (config.formaction) {
+        if (!isSupported('input', 'formAction')) {
+          formAlternatives = true;
+        } else {
+          config.formaction = false;
+        }
       }
-      if (!isSupported('input', 'formEnctype') && config.formenctype) {
-        formAlternatives = true;
-      } else {
-        config.formenctype = false;
+      if (config.formenctype) {
+        if (!isSupported('input', 'formEnctype')) {
+          formAlternatives = true;
+        } else {
+          config.formenctype = false;
+        }
       }
-      if (!isSupported('input', 'formMethod') && config.formmethod) {
-        formAlternatives = true;
-      } else {
-        config.formmethod = false;
+      if (config.formmethod) {
+        if (!isSupported('input', 'formMethod')) {
+          formAlternatives = true;
+        } else {
+          config.formmethod = false;
+        }
       }
-      if (!isSupported('input', 'formTarget') && config.formtarget) {
-        formAlternatives = true;
-      } else {
-        config.formtarget = false;
+      if (config.formtarget) {
+        if (!isSupported('input', 'formTarget')) {
+          formAlternatives = true;
+        } else {
+          config.formtarget = false;
+        }
       }
-      if (formAlternatives) {
+      if (config.formAttribute) {
+        if (formAttributeIsSupported()) {
+          config.formAttribute = false;
+        }
+      }
+      if (config.formAttribute || formAlternatives) {
         targetForm.off('submit', commonSubmitCheckup);
         targetForm.on('submit', commonSubmitCheckup);
+      }
+      if (formAlternatives) {
         formAlternativesInit();
       }
     };
@@ -78,18 +98,11 @@
       }
     };
     commonPresubmitCheckup = function() {
-      var currentTextbox, i, placeholderTextBox, _i, _len;
-      if (!isSupported('input', 'placeholder') && config.placeholder) {
-        placeholderTextBoxes = targetForm.find('*[placeholder]');
-        placeholderTextBoxes.off();
-        for (i = _i = 0, _len = placeholderTextBoxes.length; _i < _len; i = ++_i) {
-          placeholderTextBox = placeholderTextBoxes[i];
-          currentTextbox = placeholderTextBoxes.eq(i);
-          if (currentTextbox.val() === currentTextbox.attr('placeholder')) {
-            currentTextbox.val('');
-            currentTextbox.removeClass(config.placeholderClass);
-          }
-        }
+      if (config.placeholder) {
+        placeholderCleanFields();
+      }
+      if (config.formAttribute) {
+        formAttributeCloning();
       }
       return true;
     };
@@ -175,6 +188,19 @@
       currentTextbox.replaceWith(newTextbox);
       return newTextbox;
     };
+    placeholderCleanFields = function() {
+      var currentTextbox, i, placeholderTextBox, _i, _len;
+      placeholderTextBoxes = targetForm.find('*[placeholder]');
+      placeholderTextBoxes.off();
+      for (i = _i = 0, _len = placeholderTextBoxes.length; _i < _len; i = ++_i) {
+        placeholderTextBox = placeholderTextBoxes[i];
+        currentTextbox = placeholderTextBoxes.eq(i);
+        if (currentTextbox.val() === currentTextbox.attr('placeholder')) {
+          currentTextbox.val('');
+          currentTextbox.removeClass(config.placeholderClass);
+        }
+      }
+    };
     autofocusInit = function() {
       var autofocusElement;
       autofocusElement = targetForm.find('*[autofocus]');
@@ -233,6 +259,35 @@
       }
       if (commonPresubmitCheckup()) {
         targetForm.trigger('submit');
+      }
+    };
+    formAttributeIsSupported = function() {
+      var $testInput, testInput, theResult;
+      testInput = document.createElement('input');
+      $testInput = jQuery(testInput);
+      jQuery('body').append(testInput);
+      $testInput.attr('form', targetForm.attr('id'));
+      if (typeof testInput.form === 'object' && testInput.form !== null) {
+        theResult = true;
+      } else {
+        theResult = false;
+      }
+      $testInput.remove();
+      return theResult;
+    };
+    formAttributeCloning = function() {
+      var clonedElement, elementWithForm, elementWithFormTarget, elementsWithForm, formId, _i, _len;
+      elementsWithForm = jQuery('*[form]');
+      for (_i = 0, _len = elementsWithForm.length; _i < _len; _i++) {
+        elementWithForm = elementsWithForm[_i];
+        elementWithForm = jQuery(elementsWithForm);
+        elementWithFormTarget = elementWithForm.attr('form');
+        formId = targetForm.attr('id');
+        if (!jQuery.contains(targetForm[0], elementWithForm) && elementWithFormTarget === formId) {
+          clonedElement = jQuery(elementWithForm).clone();
+          clonedElement = placeholderReplaceWithType(clonedElement, 'hidden');
+          targetForm.append(clonedElement);
+        }
       }
     };
     init();

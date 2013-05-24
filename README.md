@@ -18,6 +18,7 @@ This plugin allows you to use the following attributes on legacy browsers:
 - `formenctype`
 - `formmethod`
 - `formtarget`
+- `form`
 
 Apply the plugin directly on a `<form>` tag with the desired parameters and formFive will take care of the rest.
 
@@ -46,6 +47,9 @@ Parameters
 ### formtarget
 *(boolean) default: false* - Wether or not you wish to use the `formtarget` attribute on your form elements
 
+### formAttribute
+*(boolean) default: false* - Wether or not you wish to use the `form` attribute on your form elements which are located outside the intended form
+
 Usage
 -----
 ### JavaScript
@@ -56,7 +60,8 @@ Usage
       formaction: true,
       formenctype: true,
       formmethod: true,
-      formtarget: true
+      formtarget: true,
+      formAttribute: true
 	});
 
 ### CoffeeScript
@@ -68,3 +73,4 @@ Usage
       formenctype: true
       formmethod: true
       formtarget: true
+      formAttribute: true
