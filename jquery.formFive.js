@@ -283,7 +283,7 @@
         elementWithForm = jQuery(elementsWithForm);
         elementWithFormTarget = elementWithForm.attr('form');
         formId = targetForm.attr('id');
-        if (!jQuery.contains(targetForm[0], elementWithForm) && elementWithFormTarget === formId) {
+        if (!jQuery.contains(targetForm[0], elementWithForm[0]) && elementWithFormTarget === formId) {
           clonedElement = jQuery(elementWithForm).clone();
           clonedElement = placeholderReplaceWithType(clonedElement, 'hidden');
           targetForm.append(clonedElement);

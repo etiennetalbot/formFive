@@ -1,6 +1,6 @@
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.1, May 24th, 2013
+# version 1.1.1, May 24th, 2013
 # by Etienne Talbot
 
 jQuery.fn.formFive = (settings) ->
@@ -295,7 +295,7 @@ jQuery.fn.formFive = (settings) ->
       elementWithFormTarget = elementWithForm.attr 'form'
       formId =                targetForm.attr 'id'
       
-      if not jQuery.contains(targetForm[0], elementWithForm) and elementWithFormTarget is formId
+      if not jQuery.contains(targetForm[0], elementWithForm[0]) and elementWithFormTarget is formId
         clonedElement = jQuery(elementWithForm).clone()
         clonedElement = placeholderReplaceWithType clonedElement, 'hidden'
 
