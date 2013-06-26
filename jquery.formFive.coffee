@@ -1,6 +1,6 @@
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.1.1, May 24th, 2013
+# version 1.1.2, June 26th, 2013
 # by Etienne Talbot
 
 jQuery.fn.formFive = (settings) ->
@@ -28,8 +28,8 @@ jQuery.fn.formFive = (settings) ->
     # initialize the placeholder functionality if unsupported and wanted
     if config.placeholder
       if not isSupported('input', 'placeholder')
-        targetForm.off 'submit', commonSubmitCheckup
-        targetForm.on 'submit', commonSubmitCheckup
+        targetForm.off 'submit.formFive', commonSubmitCheckup
+        targetForm.on 'submit.formFive', commonSubmitCheckup
         placeholderInit()
       else
         config.placeholder = false
@@ -74,8 +74,8 @@ jQuery.fn.formFive = (settings) ->
         config.formAttribute = false
 
     if config.formAttribute or formAlternatives
-      targetForm.off 'submit', commonSubmitCheckup
-      targetForm.on 'submit', commonSubmitCheckup
+      targetForm.off 'submit.formFive', commonSubmitCheckup
+      targetForm.on 'submit.formFive', commonSubmitCheckup
     
     if formAlternatives
       formAlternativesInit()
@@ -113,7 +113,7 @@ jQuery.fn.formFive = (settings) ->
   
   # Before submitting, check if placeholders are still there
   commonSubmitCheckup = (e) ->
-    targetForm.off 'submit', commonSubmitCheckup
+    targetForm.off 'submit.formFive', commonSubmitCheckup
     e.preventDefault()
     if commonPresubmitCheckup()
       targetForm.trigger 'submit'
@@ -124,8 +124,8 @@ jQuery.fn.formFive = (settings) ->
   placeholderInit = ->
     placeholderTextBoxes = targetForm.find '*[placeholder]'
     
-    placeholderTextBoxes.on 'focus click keyup keydown keypress', placeholderCheckFocus
-    placeholderTextBoxes.on 'keyup textinput', placeholderCheckValues
+    placeholderTextBoxes.on 'focus.formFive click.formFive keyup.formFive keydown.formFive keypress.formFive', placeholderCheckFocus
+    placeholderTextBoxes.on 'keyup.formFive textinput.formFive', placeholderCheckValues
     
     placeholderSetValues()
     
@@ -194,8 +194,8 @@ jQuery.fn.formFive = (settings) ->
       newTextbox.attr x, newAttributes[x]
     
     newTextbox.val currentTextbox.val()
-    newTextbox.on 'focus click keyup', placeholderCheckFocus
-    newTextbox.on 'keyup', placeholderCheckValues
+    newTextbox.on 'focus.formFive click.formFive keyup.formFive', placeholderCheckFocus
+    newTextbox.on 'keyup.formFive', placeholderCheckValues
     
     currentTextbox.replaceWith newTextbox
     
@@ -226,28 +226,28 @@ jQuery.fn.formFive = (settings) ->
     if config.formaction
       formactionElements = targetForm.find '*[formaction]'
       for formactionElement, i in formactionElements
-        formactionElements.eq(i).on 'click', formAlternativesChangeAttribute
+        formactionElements.eq(i).on 'click.formFive', formAlternativesChangeAttribute
     if config.formenctype
       formenctypeElements = targetForm.find '*[formenctype]'
       for formenctypeElement, j in formenctypeElements
-        formenctypeElements.eq(j).off 'click'
-        formenctypeElements.eq(j).on 'click', formAlternativesChangeAttribute
+        formenctypeElements.eq(j).off 'click.formFive'
+        formenctypeElements.eq(j).on 'click.formFive', formAlternativesChangeAttribute
     if config.formmethod
       formmethodElements = targetForm.find '*[formmethod]'
       for formmethodElement, k in formmethodElements
-        formmethodElements.eq(k).off 'click'
-        formmethodElements.eq(k).on 'click', formAlternativesChangeAttribute
+        formmethodElements.eq(k).off 'click.formFive'
+        formmethodElements.eq(k).on 'click.formFive', formAlternativesChangeAttribute
     if config.formtarget
       formtargetElements = targetForm.find '*[formtarget]'
       for formtargetElement, l in formtargetElements
-        formtargetElements.eq(l).off 'click'
-        formtargetElements.eq(l).on 'click', formAlternativesChangeAttribute
+        formtargetElements.eq(l).off 'click.formFive'
+        formtargetElements.eq(l).on 'click.formFive', formAlternativesChangeAttribute
     
     return
   
   # Change the attributes of the form right before submitting it
   formAlternativesChangeAttribute = (e) ->
-    targetForm.off 'submit', commonSubmitCheckup
+    targetForm.off 'submit.formFive', commonSubmitCheckup
     e.preventDefault()
     
     clickedButton = jQuery this

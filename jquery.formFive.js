@@ -24,8 +24,8 @@
       targetForm = jQuery(_this);
       if (config.placeholder) {
         if (!isSupported('input', 'placeholder')) {
-          targetForm.off('submit', commonSubmitCheckup);
-          targetForm.on('submit', commonSubmitCheckup);
+          targetForm.off('submit.formFive', commonSubmitCheckup);
+          targetForm.on('submit.formFive', commonSubmitCheckup);
           placeholderInit();
         } else {
           config.placeholder = false;
@@ -73,8 +73,8 @@
         }
       }
       if (config.formAttribute || formAlternatives) {
-        targetForm.off('submit', commonSubmitCheckup);
-        targetForm.on('submit', commonSubmitCheckup);
+        targetForm.off('submit.formFive', commonSubmitCheckup);
+        targetForm.on('submit.formFive', commonSubmitCheckup);
       }
       if (formAlternatives) {
         formAlternativesInit();
@@ -107,7 +107,7 @@
       return true;
     };
     commonSubmitCheckup = function(e) {
-      targetForm.off('submit', commonSubmitCheckup);
+      targetForm.off('submit.formFive', commonSubmitCheckup);
       e.preventDefault();
       if (commonPresubmitCheckup()) {
         targetForm.trigger('submit');
@@ -115,8 +115,8 @@
     };
     placeholderInit = function() {
       placeholderTextBoxes = targetForm.find('*[placeholder]');
-      placeholderTextBoxes.on('focus click keyup keydown keypress', placeholderCheckFocus);
-      placeholderTextBoxes.on('keyup textinput', placeholderCheckValues);
+      placeholderTextBoxes.on('focus.formFive click.formFive keyup.formFive keydown.formFive keypress.formFive', placeholderCheckFocus);
+      placeholderTextBoxes.on('keyup.formFive textinput.formFive', placeholderCheckValues);
       placeholderSetValues();
     };
     placeholderCheckFocus = function() {
@@ -183,8 +183,8 @@
         newTextbox.attr(x, newAttributes[x]);
       }
       newTextbox.val(currentTextbox.val());
-      newTextbox.on('focus click keyup', placeholderCheckFocus);
-      newTextbox.on('keyup', placeholderCheckValues);
+      newTextbox.on('focus.formFive click.formFive keyup.formFive', placeholderCheckFocus);
+      newTextbox.on('keyup.formFive', placeholderCheckValues);
       currentTextbox.replaceWith(newTextbox);
       return newTextbox;
     };
@@ -212,37 +212,37 @@
         formactionElements = targetForm.find('*[formaction]');
         for (i = _i = 0, _len = formactionElements.length; _i < _len; i = ++_i) {
           formactionElement = formactionElements[i];
-          formactionElements.eq(i).on('click', formAlternativesChangeAttribute);
+          formactionElements.eq(i).on('click.formFive', formAlternativesChangeAttribute);
         }
       }
       if (config.formenctype) {
         formenctypeElements = targetForm.find('*[formenctype]');
         for (j = _j = 0, _len1 = formenctypeElements.length; _j < _len1; j = ++_j) {
           formenctypeElement = formenctypeElements[j];
-          formenctypeElements.eq(j).off('click');
-          formenctypeElements.eq(j).on('click', formAlternativesChangeAttribute);
+          formenctypeElements.eq(j).off('click.formFive');
+          formenctypeElements.eq(j).on('click.formFive', formAlternativesChangeAttribute);
         }
       }
       if (config.formmethod) {
         formmethodElements = targetForm.find('*[formmethod]');
         for (k = _k = 0, _len2 = formmethodElements.length; _k < _len2; k = ++_k) {
           formmethodElement = formmethodElements[k];
-          formmethodElements.eq(k).off('click');
-          formmethodElements.eq(k).on('click', formAlternativesChangeAttribute);
+          formmethodElements.eq(k).off('click.formFive');
+          formmethodElements.eq(k).on('click.formFive', formAlternativesChangeAttribute);
         }
       }
       if (config.formtarget) {
         formtargetElements = targetForm.find('*[formtarget]');
         for (l = _l = 0, _len3 = formtargetElements.length; _l < _len3; l = ++_l) {
           formtargetElement = formtargetElements[l];
-          formtargetElements.eq(l).off('click');
-          formtargetElements.eq(l).on('click', formAlternativesChangeAttribute);
+          formtargetElements.eq(l).off('click.formFive');
+          formtargetElements.eq(l).on('click.formFive', formAlternativesChangeAttribute);
         }
       }
     };
     formAlternativesChangeAttribute = function(e) {
       var clickedButton;
-      targetForm.off('submit', commonSubmitCheckup);
+      targetForm.off('submit.formFive', commonSubmitCheckup);
       e.preventDefault();
       clickedButton = jQuery(this);
       if (clickedButton.attr('formaction') !== '' && config.formaction) {
