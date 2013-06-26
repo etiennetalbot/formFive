@@ -2,7 +2,7 @@
 (function() {
 
   jQuery.fn.formFive = function(settings) {
-    var autofocusInit, commonPresubmitCheckup, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, formAttributeCloning, formAttributeIsSupported, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderCleanFields, placeholderInit, placeholderReplaceWithType, placeholderSetValues, placeholderTextBoxes, targetForm,
+    var autofocusInit, commonPresubmitCheckup, commonReplaceWithType, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, formAttributeCloning, formAttributeIsSupported, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderCleanFields, placeholderInit, placeholderSetValues, placeholderTextBoxes, targetForm,
       _this = this;
     config = {
       placeholder: false,
@@ -97,6 +97,32 @@
         currentElement[0].setSelectionRange(position, position);
       }
     };
+    commonReplaceWithType = function(currentTextbox, newType, clone) {
+      var eThis, newAttributes, newTextbox, oldAttribute, oldAttributes, theValue, x, _i, _len;
+      theValue = currentTextbox.val();
+      if (clone === true) {
+        currentTextbox = currentTextbox.clone();
+      }
+      eThis = currentTextbox.get(0);
+      oldAttributes = eThis.attributes;
+      newAttributes = {};
+      for (_i = 0, _len = oldAttributes.length; _i < _len; _i++) {
+        oldAttribute = oldAttributes[_i];
+        if (oldAttribute.specified === true) {
+          newAttributes[oldAttribute.name] = oldAttribute.value;
+        }
+      }
+      newAttributes['type'] = newType;
+      newTextbox = jQuery(document.createElement('input'));
+      for (x in newAttributes) {
+        newTextbox.attr(x, newAttributes[x]);
+      }
+      newTextbox.val(theValue);
+      newTextbox.on('focus.formFive click.formFive keyup.formFive', placeholderCheckFocus);
+      newTextbox.on('keyup.formFive', placeholderCheckValues);
+      currentTextbox.replaceWith(newTextbox);
+      return newTextbox;
+    };
     commonPresubmitCheckup = function() {
       if (config.placeholder) {
         placeholderCleanFields();
@@ -133,7 +159,7 @@
         currentElement.addClass(config.placeholderClass);
         currentElement.val(currentElement.attr('placeholder'));
         if (currentElement.attr('type') === 'password') {
-          currentElement = placeholderReplaceWithType(currentElement, 'text');
+          currentElement = commonReplaceWithType(currentElement, 'text', false);
           currentElement.focus();
         }
         commonSetCaret(currentElement, 0);
@@ -141,7 +167,7 @@
         if (currentElement.hasClass(config.placeholderClass) && currentElement.val() !== currentElement.attr('placeholder')) {
           currentElement.removeClass(config.placeholderClass);
           if (currentElement.hasClass('formFivePlaceholder')) {
-            currentElement = placeholderReplaceWithType(currentElement, 'password');
+            currentElement = commonReplaceWithType(currentElement, 'password', false);
             commonSetCaret(currentElement, 99999);
             currentElement.focus();
           }
@@ -161,32 +187,10 @@
           currentTextbox.addClass(config.placeholderClass);
           if (currentTextbox.attr('type') === 'password') {
             currentTextbox.addClass('formFivePlaceholder');
-            currentTextbox = placeholderReplaceWithType(currentTextbox, 'text');
+            currentTextbox = commonReplaceWithType(currentTextbox, 'text', false);
           }
         }
       }
-    };
-    placeholderReplaceWithType = function(currentTextbox, newType) {
-      var eThis, newAttributes, newTextbox, oldAttribute, oldAttributes, x, _i, _len;
-      eThis = currentTextbox.get(0);
-      oldAttributes = eThis.attributes;
-      newAttributes = {};
-      for (_i = 0, _len = oldAttributes.length; _i < _len; _i++) {
-        oldAttribute = oldAttributes[_i];
-        if (oldAttribute.specified === true) {
-          newAttributes[oldAttribute.name] = oldAttribute.value;
-        }
-      }
-      newAttributes['type'] = newType;
-      newTextbox = jQuery(document.createElement('input'));
-      for (x in newAttributes) {
-        newTextbox.attr(x, newAttributes[x]);
-      }
-      newTextbox.val(currentTextbox.val());
-      newTextbox.on('focus.formFive click.formFive keyup.formFive', placeholderCheckFocus);
-      newTextbox.on('keyup.formFive', placeholderCheckValues);
-      currentTextbox.replaceWith(newTextbox);
-      return newTextbox;
     };
     placeholderCleanFields = function() {
       var currentTextbox, i, placeholderTextBox, _i, _len;
@@ -280,12 +284,11 @@
       elementsWithForm = jQuery('*[form]');
       for (_i = 0, _len = elementsWithForm.length; _i < _len; _i++) {
         elementWithForm = elementsWithForm[_i];
-        elementWithForm = jQuery(elementsWithForm);
+        elementWithForm = jQuery(elementWithForm);
         elementWithFormTarget = elementWithForm.attr('form');
         formId = targetForm.attr('id');
         if (!jQuery.contains(targetForm[0], elementWithForm[0]) && elementWithFormTarget === formId) {
-          clonedElement = jQuery(elementWithForm).clone();
-          clonedElement = placeholderReplaceWithType(clonedElement, 'hidden');
+          clonedElement = commonReplaceWithType(jQuery(elementWithForm), 'hidden', true);
           targetForm.append(clonedElement);
         }
       }

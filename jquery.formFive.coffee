@@ -100,6 +100,35 @@ jQuery.fn.formFive = (settings) ->
       currentElement[0].setSelectionRange position, position
     
     return
+
+  # Replace a form element (input) with another type attribute (ex: text to password)
+  commonReplaceWithType = (currentTextbox, newType, clone) ->
+    theValue = currentTextbox.val()
+    
+    if clone is true
+      currentTextbox = currentTextbox.clone()
+    
+    eThis = currentTextbox.get 0
+
+    oldAttributes = eThis.attributes
+    newAttributes = {}
+
+    for oldAttribute in oldAttributes
+      newAttributes[oldAttribute.name] = oldAttribute.value if oldAttribute.specified is true
+    newAttributes['type'] = newType
+    
+    newTextbox = jQuery document.createElement 'input'
+    
+    for x of newAttributes
+      newTextbox.attr x, newAttributes[x]
+    
+    newTextbox.val theValue
+    newTextbox.on 'focus.formFive click.formFive keyup.formFive', placeholderCheckFocus
+    newTextbox.on 'keyup.formFive', placeholderCheckValues
+    
+    currentTextbox.replaceWith newTextbox
+    
+    return newTextbox
   
   # Before submitting, check if placeholders are still there
   commonPresubmitCheckup = ->
@@ -148,14 +177,14 @@ jQuery.fn.formFive = (settings) ->
       currentElement.addClass config.placeholderClass
       currentElement.val currentElement.attr 'placeholder'
       if currentElement.attr('type') is 'password'
-        currentElement = placeholderReplaceWithType currentElement, 'text'
+        currentElement = commonReplaceWithType currentElement, 'text', false
         currentElement.focus()
       commonSetCaret currentElement, 0
     else
       if currentElement.hasClass(config.placeholderClass) && currentElement.val() isnt currentElement.attr 'placeholder'
         currentElement.removeClass config.placeholderClass
         if currentElement.hasClass 'formFivePlaceholder'
-          currentElement = placeholderReplaceWithType currentElement, 'password'
+          currentElement = commonReplaceWithType currentElement, 'password', false
           commonSetCaret currentElement, 99999
           currentElement.focus()
         if currentElement.index currentElement.attr 'placeholder'
@@ -174,32 +203,9 @@ jQuery.fn.formFive = (settings) ->
         
         if currentTextbox.attr('type') is 'password'
           currentTextbox.addClass 'formFivePlaceholder'
-          currentTextbox = placeholderReplaceWithType currentTextbox, 'text'
+          currentTextbox = commonReplaceWithType currentTextbox, 'text', false
     
     return
-  
-  # Replace a form element (input) with another type attribute (ex: text to password)
-  placeholderReplaceWithType = (currentTextbox, newType) ->
-    eThis =         currentTextbox.get 0
-    oldAttributes = eThis.attributes
-    newAttributes = {}
-    
-    for oldAttribute in oldAttributes
-      newAttributes[oldAttribute.name] = oldAttribute.value if oldAttribute.specified is true
-    newAttributes['type'] = newType
-    
-    newTextbox = jQuery document.createElement 'input'
-    
-    for x of newAttributes
-      newTextbox.attr x, newAttributes[x]
-    
-    newTextbox.val currentTextbox.val()
-    newTextbox.on 'focus.formFive click.formFive keyup.formFive', placeholderCheckFocus
-    newTextbox.on 'keyup.formFive', placeholderCheckValues
-    
-    currentTextbox.replaceWith newTextbox
-    
-    return newTextbox
 
   # Remove the values in the placeholder fields if these values are the same as the placeholder
   placeholderCleanFields = ->
@@ -291,13 +297,11 @@ jQuery.fn.formFive = (settings) ->
     elementsWithForm = jQuery '*[form]'
 
     for elementWithForm in elementsWithForm
-      elementWithForm =       jQuery elementsWithForm
+      elementWithForm =       jQuery elementWithForm
       elementWithFormTarget = elementWithForm.attr 'form'
       formId =                targetForm.attr 'id'
-      
       if not jQuery.contains(targetForm[0], elementWithForm[0]) and elementWithFormTarget is formId
-        clonedElement = jQuery(elementWithForm).clone()
-        clonedElement = placeholderReplaceWithType clonedElement, 'hidden'
+        clonedElement = commonReplaceWithType jQuery(elementWithForm), 'hidden', true
 
         targetForm.append clonedElement
 
