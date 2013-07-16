@@ -205,7 +205,6 @@
           if (currentTextboxMax != null) {
             currentTextbox.attr('data-ffmaxlength', currentTextboxMax);
             currentTextbox.attr('maxlength', '');
-            alert(currentTextbox.attr('maxlength'));
           }
           if (currentTextbox.attr('type') === 'password') {
             currentTextbox.addClass('formFivePlaceholder');

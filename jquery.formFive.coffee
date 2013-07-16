@@ -212,7 +212,6 @@ jQuery.fn.formFive = (settings) ->
         if currentTextboxMax?
           currentTextbox.attr 'data-ffmaxlength', currentTextboxMax
           currentTextbox.attr 'maxlength', ''
-          alert currentTextbox.attr 'maxlength'
         
         if currentTextbox.attr('type') is 'password'
           currentTextbox.addClass 'formFivePlaceholder'
