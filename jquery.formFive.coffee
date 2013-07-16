@@ -1,7 +1,9 @@
+###
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.1.2, June 26th, 2013
+# version 1.1.3, July 16th, 2013
 # by Etienne Talbot
+###
 
 jQuery.fn.formFive = (settings) ->
   
@@ -171,11 +173,14 @@ jQuery.fn.formFive = (settings) ->
   
   # Add or remove placeholder classes depending on the current value
   placeholderCheckValues = ->
-    currentElement = jQuery this
-    
+    currentElement    = jQuery this
+    currentElementMax = currentElement.attr 'data-ffmaxlength'
+
     if currentElement.val() is ''
       currentElement.addClass config.placeholderClass
       currentElement.val currentElement.attr 'placeholder'
+      if currentElementMax?
+        currentElement.attr 'maxlength', ''
       if currentElement.attr('type') is 'password'
         currentElement = commonReplaceWithType currentElement, 'text', false
         currentElement.focus()
@@ -183,6 +188,8 @@ jQuery.fn.formFive = (settings) ->
     else
       if currentElement.hasClass(config.placeholderClass) && currentElement.val() isnt currentElement.attr 'placeholder'
         currentElement.removeClass config.placeholderClass
+        if currentElementMax?
+          currentElement.attr 'maxlength', currentElementMax
         if currentElement.hasClass 'formFivePlaceholder'
           currentElement = commonReplaceWithType currentElement, 'password', false
           commonSetCaret currentElement, 99999
@@ -195,11 +202,17 @@ jQuery.fn.formFive = (settings) ->
   # Set the value attribute accordingly with the placeholder attribute
   placeholderSetValues = ->
     for placeHolderTextBox, i in placeholderTextBoxes
-      currentTextbox = placeholderTextBoxes.eq i
-      
+      currentTextbox    = placeholderTextBoxes.eq i
+      currentTextboxMax = currentTextbox.attr 'maxlength'
+
       if currentTextbox.val() is '' or currentTextbox.val() is currentTextbox.attr 'placeholder'
         currentTextbox.val currentTextbox.attr 'placeholder'
         currentTextbox.addClass config.placeholderClass
+
+        if currentTextboxMax?
+          currentTextbox.attr 'data-ffmaxlength', currentTextboxMax
+          currentTextbox.attr 'maxlength', ''
+          alert currentTextbox.attr 'maxlength'
         
         if currentTextbox.attr('type') is 'password'
           currentTextbox.addClass 'formFivePlaceholder'
