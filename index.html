@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>formFive - HTML5 form support for legacy browsers</title>
+        <meta name="description" content="A jQuery polyfill for HTML5 Form compatibility. Use autofocus, placeholder, form, formaction, formenctype, formmethod and formtarget attributes">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#howto">How to use</a></li>
+          <li><a href="/demos/demo.html">Demo</a></li>
+        </ul>
+        <h3 class="muted">formFive</h3>
+      </div>
+
+      <hr>
+
+      <div class="jumbotron">
+        <h1>HTML5 form support for legacy browsers</h1>
+        <p class="lead">Here is <em>formFive</em>, a polyfill for your forms that makes some HTML5 form features available on older browsers.</p>
+        <a class="btn btn-large btn-success" href="https://github.com/etiennetalbot/formFive/archive/master.zip">Download it!</a>
+        <a class="btn btn-large" href="/demos/demo.html">Demo (visit with a legacy browser)</a>
+      </div>
+      
+      <hr />
+      
+      <ul class="social-btns">
+        <li><iframe src="http://ghbtns.com/github-btn.html?user=etiennetalbot&repo=formFive&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102" height="20"></iframe></li>
+        <li><iframe src="http://ghbtns.com/github-btn.html?user=etiennetalbot&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="192" height="20"></iframe></li>
+        <li><a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-url="http://tiny.cc/a5w7zw" data-counturl="http://etiennetalbot.github.io/formFive/">Tweet</a></li>
+        <li><a href="https://twitter.com/etiennetalbot" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @etiennetalbot</a></li>
+      </ul>
+
+      <hr>
+
+      <div class="row-fluid marketing" id="features">
+        <div class="span3">
+          <h4>Placeholder</h4>
+          <p>Want to make placeholders work on Internet Explorer? This plugin will provide you with a stylable placeholder text... even on password fields!</p>
+        </div>
+        <div class="span3">
+          <h4>Autofocus</h4>
+          <p>When used, your field will be automatically selected. Just use the autofocus attribute as it should and <i>voilà</i>.</p>
+        </div>
+        <div class="span3">
+          <h4>Alternative submits</h4>
+          <p>Want multiple submit buttons with different settings (action, enctype, method, target)? No problem!</p>
+        </div>
+        <div class="span3">
+          <h4>Form attribute</h4>
+          <p>If you need any form element to be outside of the <code>&lt;form&gt;</code> tag boundaries and still work, just add an attribute and you're done!</p>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>HTML5 forms for every browser!</h2>
+      <p>Forms in HTML5 have a lot of very nice features, but unfortunately we often have to support older browsers. This polyfill checks for feature support and goes to work only if it has to. For instance, if a user is using Google Chrome, formFive won't do anything.</p>
+
+      <hr />
+
+      <h2 id="howto">How to use it</h2>
+
+      <p>Add the script tag</p>
+      
+      <pre>&lt;script src="/js/jquery.formFive.min.js"&gt;&lt;/script&gt;</pre>
+      
+      <p>Call formFive</p>
+
+      <pre>$('#form-id').formFive({
+  placeholder: true,
+  placeholderClass: 'phclass',
+  autofocus: true,
+  formaction: true,
+  formenctype: true,
+  formmethod: true,
+  formtarget: true,
+  formAttribute: true
+});</pre>
+
+      <p>Keep in mind that all the parameters are optional. For instance, if your just want to use the autofocus feature, call formFive this way :</p>
+
+      <pre>$('#form-id').formFive({
+  autofocus: true
+});</pre>
+
+      <p>That's it! Of course you have to use the normal HTML5 attributes required for this to work.</p>
+      
+      <h3>HTML5 attributes to use</h3>
+
+      <h4>placeholder</h4>
+
+      <pre>&lt;input type="text" placeholder="The placeholder text" /&gt;</pre>
+
+      <p>By default, formFive adds a class to the input when it contains a placeholder text (so you can style how it looks). The default class is "placeholder", but you can specify a new class name by setting the <code>placeholderClass</code> option.</p>
+
+      <h4>autofocus</h4>
+
+      <pre>&lt;input type="text" autofocus="autofocus" /&gt;</pre>
+
+      <h4>formaction</h4>
+
+      <pre>&lt;input type="submit" formaction="/otherpage.html" /&gt;</pre>
+
+      <h4>formenctype</h4>
+
+      <pre>&lt;input type="submit" formenctype="multipart/form-data" /&gt;</pre>
+
+      <h4>formmethod</h4>
+
+      <pre>&lt;input type="submit" formmethod="get" /&gt;</pre>
+
+      <h4>formtarget</h4>
+
+      <pre>&lt;input type="submit" formtarget="_blank" /&gt;</pre>
+
+      <h4>form</h4>
+
+      <pre>&lt;input type="text" form="form-id" /&gt;</pre>
+
+      <p>Use the <code>form</code> attribute on an element outside of the boundaries of the <code>&lt;form&gt;</code> tag. That element will be included when the form submits.</p>
+
+      <h3>More details</h3>
+
+      <p>Want to have more details about the options? See the code? Fork it? Visit the <a href="https://github.com/etiennetalbot/formFive" target="_blank">formFive GitHub repository</a>.</p>
+
+      <hr />
+
+      <div class="footer">
+        <p>By <a href="https://github.com/etiennetalbot" target="_blank">Etienne Talbot</a></p>
+      </div>
+
+    </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+        <script src="js/main.js"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-42200054-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src='//www.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>

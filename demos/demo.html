@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Form Five! - HTML5 forms support?!? High five!!</title>
+<style media="all" type="text/css">
+.wrapper { font-family: 'Helvetica Neue', Helvetica, sans-serif; margin: 0 auto; width: 960px; }
+section { border-bottom: 1px solid #ccc; padding: 20px 0; }
+section p { margin: 0; }
+h1 { text-align: center; }
+dt { font-weight: bold; }
+dd { margin: 0 0 10px 20px; }
+a { color: #666; }
+a:hover { color: #000; }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.formFive.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	$( '.js-form-class' ).formFive({
+    placeholder: true,
+    autofocus:   true,
+    formaction:  true,
+    formenctype: true,
+    formmethod:  true,
+    formtarget:  true,
+    formAttribute: true
+	});
+	
+});
+</script>
+</head>
+
+<body>
+<div class="wrapper">
+    <h1>formFive</h1>
+    
+
+    
+    <form class="js-form-class" action="index.html" method="get" id="formFiveForm">
+        <section>
+            <h2>Placeholder</h2>
+            <p>The placeholder option detects if the current browser natively supports placeholders<br />
+              If that's the case, it won't do anything If it isn't, it adds the placeholder class (or any<br />
+              other class set in the parameters) to the elements showing placeholders as a value and emulates<br />
+              the basic behavior of a placeholder.<br /><br /></p>
+            <input type="password" placeholder="Password here" name="pass" id="pass" /><br /><br />
+            <textarea placeholder="Type in your message" name="message" id="message"></textarea>
+        </section>
+        
+        <section>
+            <h2>Autofocus</h2>
+            <p>Just add autofocus="autofocus" to place the caret in that input on loading<br /><br /></p>
+            <input type="text" placeholder="THe caret will be here on loading" name="autofocus" autofocus="autofocus" id="autofocus" />
+        </section>
+        
+        <section>
+            <h2>Submit</h2>
+            <input type="submit" value="Submit" /> <button type="submit" formaction="http://www.apple.com/">Submit to Apple</button> <input type="submit" value="Submit in a new window" formtarget="_blank" /> <input type="submit" value="Submit with the post method" formmethod="post" />
+        </section>
+
+        <section>
+            <h2>Form Attribute</h2>
+            <input type="submit" value="Submit" />
+        </section>
+        
+    </form>
+<input type="text" value="" name="outsideTest" id="outsideTest" form="formFiveForm" />
+<select name="out2" id="out2" form="formFiveForm">
+  <option value="">Pick something</option>
+  <option value="1">Choice 1</option>
+  <option value="2">Choice 2</option>
+</select>
+</div>
+</body>
+</html>
