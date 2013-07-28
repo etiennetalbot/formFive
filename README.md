@@ -1,12 +1,12 @@
 formFive
 ========
 
-CoffeeScript plugin giving some of the HTML5 Form functionalities to older browsers
+jQuery plugin giving some of the HTML5 Form functionalities to older browsers
 
 Requirements
 ------------
 
-This plugin requires jQuery
+This plugin requires jQuery 1.7 and higher
 
 Information
 -----------
