@@ -1,7 +1,7 @@
 ###
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.1.3, July 16th, 2013
+# version 1.1.4, September 22nd, 2013
 # by Etienne Talbot
 ###
 
@@ -74,6 +74,8 @@ jQuery.fn.formFive = (settings) ->
     if config.formAttribute
       if formAttributeIsSupported()
         config.formAttribute = false
+      else
+        formAttributeSubmitWatch()
 
     if config.formAttribute or formAlternatives
       targetForm.off 'submit.formFive', commonSubmitCheckup
@@ -319,7 +321,18 @@ jQuery.fn.formFive = (settings) ->
 
     return
 
+  # Check if submit buttons with the form attribute are used outside the form
+  formAttributeSubmitWatch = ->
+    formId =     targetForm.attr 'id'
+    formSubmit = jQuery('*[type="submit"][form="'+formId+'"]')
+    
+    formSubmit.on 'click.formFive', ->
+      if !jQuery(this).is(':disabled')
+        targetForm.submit()
+
+    return
+
 
   init()
   
-  return this
+  this

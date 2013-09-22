@@ -1,7 +1,7 @@
 /*
 # formFive jQuery Plugin
 # A plugin for HTML5 Form compatibility
-# version 1.1.3, July 16th, 2013
+# version 1.1.4, September 22nd, 2013
 # by Etienne Talbot
 */
 
@@ -9,7 +9,7 @@
 (function() {
 
   jQuery.fn.formFive = function(settings) {
-    var autofocusInit, commonPresubmitCheckup, commonReplaceWithType, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, formAttributeCloning, formAttributeIsSupported, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderCleanFields, placeholderInit, placeholderSetValues, placeholderTextBoxes, targetForm,
+    var autofocusInit, commonPresubmitCheckup, commonReplaceWithType, commonSetCaret, commonSubmitCheckup, config, formAlternativesChangeAttribute, formAlternativesInit, formAttributeCloning, formAttributeIsSupported, formAttributeSubmitWatch, init, isSupported, placeholderCheckFocus, placeholderCheckValues, placeholderCleanFields, placeholderInit, placeholderSetValues, placeholderTextBoxes, targetForm,
       _this = this;
     config = {
       placeholder: false,
@@ -77,6 +77,8 @@
       if (config.formAttribute) {
         if (formAttributeIsSupported()) {
           config.formAttribute = false;
+        } else {
+          formAttributeSubmitWatch();
         }
       }
       if (config.formAttribute || formAlternatives) {
@@ -311,6 +313,16 @@
           targetForm.append(clonedElement);
         }
       }
+    };
+    formAttributeSubmitWatch = function() {
+      var formId, formSubmit;
+      formId = targetForm.attr('id');
+      formSubmit = jQuery('*[type="submit"][form="' + formId + '"]');
+      formSubmit.on('click.formFive', function() {
+        if (!jQuery(this).is(':disabled')) {
+          return targetForm.submit();
+        }
+      });
     };
     init();
     return this;
